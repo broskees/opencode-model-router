@@ -1,0 +1,4 @@
+{
+  "plugin": ["opencode-virtual-provider"],
+  "model": "virtual/coding"
+}

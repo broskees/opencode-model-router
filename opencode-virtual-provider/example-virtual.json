@@ -1,0 +1,28 @@
+{
+  "models": {
+    "coding": {
+      "strategy": "sequential",
+      "strategy_profile": "robust_coding",
+      "targets": [
+        { "model": "anthropic/claude-sonnet-4", "provider": "anthropic" },
+        { "model": "openai/gpt-4.1", "provider": "openai" }
+      ]
+    },
+    "fast": {
+      "strategy": "round_robin",
+      "targets": [
+        { "model": "openai/gpt-4o-mini", "provider": "openai" },
+        { "model": "openai/gpt-4.1-mini", "provider": "openai" }
+      ]
+    }
+  },
+  "strategies": {
+    "robust_coding": {
+      "max_retries": 3,
+      "backoff": { "type": "exponential", "initial": "500ms", "multiplier": 2 },
+      "fallback_on": [429, 500, 503],
+      "cooldown": "15m",
+      "on_fail": "continue_with_next"
+    }
+  }
+}

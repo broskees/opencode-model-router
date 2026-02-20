@@ -1,0 +1,83 @@
+{
+  "runtimeReplacement": {
+    "model": "virtual/work-build",
+    "small_model": "anthropic/claude-haiku-4-5",
+    "agent": {
+      "build":   { "model": "virtual/work-build" },
+      "plan":    { "model": "virtual/work-plan" },
+      "general": { "model": "virtual/work-fix" }
+    }
+  },
+  "models": {
+    "work-build": {
+      "strategy": "sequential",
+      "strategy_profile": "sane_default",
+      "targets": [
+        { "provider": "anthropic", "model": "anthropic/claude-sonnet-4-6" },
+        { "provider": "openrouter", "model": "openrouter/anthropic/claude-sonnet-4.6" }
+      ]
+    },
+    "work-fix": {
+      "strategy": "sequential",
+      "strategy_profile": "sane_default",
+      "targets": [
+        { "provider": "openrouter", "model": "openrouter/anthropic/claude-sonnet-4.5" },
+        { "provider": "anthropic", "model": "anthropic/claude-sonnet-4-6" }
+      ]
+    },
+    "work-plan": {
+      "strategy": "sequential",
+      "strategy_profile": "sane_default",
+      "targets": [
+        { "provider": "anthropic", "model": "anthropic/claude-opus-4-6" },
+        { "provider": "openrouter", "model": "openrouter/anthropic/claude-opus-4.6" }
+      ]
+    },
+    "personal-build": {
+      "strategy": "sequential",
+      "strategy_profile": "sane_default",
+      "targets": [
+        { "provider": "anthropic", "model": "anthropic/claude-sonnet-4-6" },
+        { "provider": "openrouter", "model": "openrouter/minimax/minimax-m2.5" }
+      ]
+    },
+    "personal-fix": {
+      "strategy": "sequential",
+      "strategy_profile": "sane_default",
+      "targets": [
+        { "provider": "openai", "model": "openai/gpt-5.3-codex" },
+        { "provider": "openrouter", "model": "openrouter/z-ai/glm-5" }
+      ]
+    },
+    "personal-plan": {
+      "strategy": "sequential",
+      "strategy_profile": "sane_default",
+      "targets": [
+        { "provider": "anthropic", "model": "anthropic/claude-opus-4-6" },
+        { "provider": "openrouter", "model": "openrouter/minimax/minimax-m2.5" }
+      ]
+    },
+    "small-model": {
+      "strategy": "sequential",
+      "strategy_profile": "sane_default",
+      "targets": [
+        { "provider": "openrouter", "model": "openrouter/moonshotai/kimi-k2.5" },
+        { "provider": "openrouter", "model": "openrouter/moonshotai/kimi-k2" }
+      ]
+    }
+  },
+  "strategies": {
+    "sane_default": {
+      "max_retries": 1,
+      "fallback_on": [429, 500, 502, 503, 504],
+      "cooldown": "5m",
+      "backoff": {
+        "type": "exponential",
+        "initial": "500ms",
+        "multiplier": 2,
+        "max": "5s"
+      },
+      "on_fail": "continue_with_next"
+    }
+  }
+}
